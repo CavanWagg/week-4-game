@@ -11,13 +11,13 @@ let char = {
 "Joker": {
   name: "Joker",
   healthPoints: 130,
-  attackpower: 30,
+  attackPower: 30,
   counterAttackPower: 40,
 },
 "Robin": {
   name: "Robin",
-  HealthPoints: 100,
-  AttackPower: 30,
+  healthPoints: 100,
+  attackPower: 30,
   counterAttackPower: 40,
 },
 "Bane": {
@@ -34,6 +34,8 @@ let char = {
 }
 }
 
+var selectedChar;
+var selectedDefender;
 
 
 
@@ -42,7 +44,6 @@ let char = {
 let initializeGame = function() {
   for (var key in char) {
     renderChar(char[key],"#character-selection");
-
   }
 }
 
@@ -57,14 +58,17 @@ let renderChar = function(char,renderArea) {
   let charCounterAttack = $("<div class='char-counterAttackPower'>").text(char.counterAttackPower);
   charDiv.append(charName).append(charHealth).append(charAttack).append(charCounterAttack);
   $(renderArea).append(charDiv);
-  return renderChar;
+  // return renderChar;
 }
+initializeGame();
 
 
 
 //click event Select character, 
-
-
+// let selectChar = function() {
+$('.char').click(function(){
+ $(this).addClass('chosen-hero')
+})
 
 
 //select enemy, 
@@ -73,10 +77,24 @@ let renderChar = function(char,renderArea) {
 
 
 
-//Attack enemy
+//Attack enemy, //create a button onclick attack function
+
+
+// enemy healthPoints -= playerAttack
+// hero healthPoints -= enemyAttack 
+
 
 //render message 
 
+// if (hero healthPoints < 1)
+// gameOver();
+// if all enemy healthPoints < 1)
+// victory(); 
+
 //clear message 
 
-//reset game to initial state
+//reset game to initial state using a reset button
+let restart = $('<button class="tn">Restart</button>').click(function() {
+  location.reload();
+});
+$("#gameMessage").append(restart); //need to render gameMessage
