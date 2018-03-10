@@ -1,0 +1,26 @@
+{
+  "name": "week-4-game",
+  "version": "1.0.0",
+  "description": "Star Wars RPG game with JQuery",
+  "main": "script.js",
+  "dependencies": {
+    "npm": "^5.7.1"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.9.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CavanWagg/week-4-game.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CavanWagg/week-4-game/issues"
+  },
+  "homepage": "https://github.com/CavanWagg/week-4-game#readme"
+}
