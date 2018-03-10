@@ -1,7 +1,7 @@
 //Create characters using objects
 
 $(document).ready(function() {
-  let char = {
+  let characters = {
     Batman: {
       name: "Batman",
       image: "assets/images/batman.png",
@@ -39,25 +39,30 @@ $(document).ready(function() {
     }
   };
 
-  var selectedChar;
+  var currentSelectedCharacter;
+  var currentDefender;
+  var selectedCharacter;
   var selectedDefender;
+  var combatants = [];
 
   //initialize game
 
-  let renderOne = function(char, renderArea, selectChar) {
-    let charDiv = $("<div class='char'>");
-    let charName = $("<div class='char-name'>").text(char.name);
-    let charImage = $("<img alt='image' class='char-image'>").attr(
+  let renderOne = function(character, renderArea, makeChar) {
+    let charDiv = $("<div class='character' data-name='" + character.name + "'>");
+    let charName = $("<div class='character-name'>").text(character.name);
+    let charImage = $("<img alt='image' class='character-image'>").attr(
       "src",
-      char.image
+      character.image
     );
-    let charHealth = $("<div class='char-healthPoints'>").text(
-      char.healthPoints
+    let charHealth = $("<div class='character-healthPoints'>").text(
+      character.healthPoints
     );
-    let charAttack = $("<div class='char-attackPower'>").text(char.attackPower);
-    let charCounterAttack = $("<div class='char-counterAttackPower'>").text(
-      char.counterAttackPower
+    let charAttack = $("<div class='character-attackPower'>").text(
+      character.attackPower
     );
+    let charCounterAttack = $(
+      "<div class='character-counterAttackPower'>"
+    ).text(character.counterAttackPower);
     charDiv
       .append(charName)
       .append(charImage)
@@ -67,40 +72,57 @@ $(document).ready(function() {
     $(renderArea).append(charDiv);
 
     //conditional, separating out enemies
-    if (selectChar == "enemy") {
+    if (makeChar == "enemy") {
       $(charDiv).addClass("enemy");
-    } else if (selectChar == "defender") {
-      currDefender = character;
+    } else if (makeChar == "defender") {
+      currentDefender = character;
       $(charDiv).addClass("target-enemy");
     }
   };
 
-  let renderChars = function(char, areaRender) {
+  let renderCharacters = function(charObj, areaRender) {
     //render all characters
     if (areaRender == "#characters-section") {
       $(areaRender).empty();
-      for (var key in char) {
-        if (char.hasOwnProperty(key)) {
-          renderOne(char[key], areaRender, "");
+      for (var key in charObj) {
+        if (charObj.hasOwnProperty(key)) {
+          renderOne(charObj[key], areaRender, "");
         }
       }
     }
 
     //render player character
-    if (areaRender == "#selected-char") {
-      $("#selected-char").prepend("Your Character");
-      renderOne(char, areaRender, "");
-      // $('#attack-button').css('visibility', 'visible');
+    if (areaRender == "#selected-character") {
+      $("#selected-character").prepend("Your Character");
+      renderOne(charObj, areaRender, "");
+      $('#attack-button').css('visibility', 'visible');
     }
-    // renderOne(char[i], areaRender, 'enemy');
+    //render combatants
+    if (areaRender == "#available-to-attack-section") {
+      $("#available-to-attack-section").prepend("Choose your opponent");
+      for (var i = 0; i < charObj.length; i++) {
+        renderOne(charObj[i], areaRender, "enemy");
+      }
+    }
   };
-  renderChars(char, "#characters-section");
+  //render all characters for user to choose who they fight
+  renderCharacters(characters, "#characters-section");
+  $(document).on("click", ".character", function() {
+    name = $(this).data("name");
+    //if no player char has been selected
+    if (!currentSelectedCharacter) {
+      currentSelectedCharacter = characters[name];
+      for (var key in characters) {
+        if (key != name) {
+          combatants.push(characters[key]);
+        }
+      }
+      $("#characters-section").hide();
+      renderCharacters(currentSelectedCharacter, "#selected-character");
 
-  //click event Select character,
-  // let selectChar = function() {
-  // $('.char').click(function(){
-  //  $(this).addClass('chosen-hero')
-  // })
+      renderCharacters(combatants, "#available-to-attack-section");
+    }
+  });
 
   //select enemy,
 

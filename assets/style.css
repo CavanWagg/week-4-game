@@ -1,7 +1,17 @@
-.char {
+/* #fdff00 
+#000000
+  #242424
+    #ffed39
+    	#3a486f blue
+*/
+
+
+
+
+.character {
   border: solid 1px black;
 }
 
-.char-image {
+.character-image {
   width: 150px;
 }
