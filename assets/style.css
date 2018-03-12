@@ -4,14 +4,15 @@
     #ffed39
     	#3a486f blue
 */
-
-
-
-
-.character {
-  border: solid 1px black;
+#characters-section {
+  background: #002A47;
+  color: white;
 }
-
+.character {
+  border: solid 1px #fAA60A;
+  margin: 10px;
+  background: #50667F;
+}
 .character-image {
   width: 150px;
 }

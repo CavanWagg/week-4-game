@@ -41,9 +41,9 @@ $(document).ready(function() {
 
   var currentSelectedCharacter;
   var currentDefender;
-  var selectedCharacter;
-  var selectedDefender;
+  var attackResult;
   var combatants = [];
+  var turnCounter = 1;
 
   //initialize game
 
@@ -80,13 +80,25 @@ $(document).ready(function() {
     }
   };
 
-  let renderCharacters = function(charObj, areaRender) {
+  //function to render game message 
+  let renderMessage = function(message) {
+    let gameMessageSet = $('#gameMessage');
+    let newMessage = $('<div>').text(message);
+    gameMessageSet.append(newMessage);
+    console.log('Game Message');
+
+    if (message == 'clearMessage') {
+      gameMessageSet.text('');
+    }
+  };
+
+  let renderCharacters = function(charactersObject, areaRender) {
     //render all characters
     if (areaRender == "#characters-section") {
       $(areaRender).empty();
-      for (var key in charObj) {
-        if (charObj.hasOwnProperty(key)) {
-          renderOne(charObj[key], areaRender, "");
+      for (var key in charactersObject) {
+        if (charactersObject.hasOwnProperty(key)) {
+          renderOne(charactersObject[key], areaRender, "");
         }
       }
     }
@@ -94,17 +106,57 @@ $(document).ready(function() {
     //render player character
     if (areaRender == "#selected-character") {
       $("#selected-character").prepend("Your Character");
-      renderOne(charObj, areaRender, "");
+      renderOne(charactersObject, areaRender, "");
       $('#attack-button').css('visibility', 'visible');
     }
     //render combatants
     if (areaRender == "#available-to-attack-section") {
       $("#available-to-attack-section").prepend("Choose your opponent");
-      for (var i = 0; i < charObj.length; i++) {
-        renderOne(charObj[i], areaRender, "enemy");
+      for (var i = 0; i < charactersObject.length; i++) {
+        renderOne(charactersObject[i], areaRender, "enemy");
+      }
+      //render single enemy to defender area
+      $(document).on('click', '.enemy', function() {
+        console.log('you clicked an enemy to fight!');
+        //select an enemy to fight
+        name = ($(this).data('name'));
+        //if defender area is empty
+        if ($('#defender').children().length === 0) {
+          renderCharacters(name, '#defender');
+          $(this).hide();
+          renderMessage("clearMessage");
+        }
+      });
+    }
+    //render defender 
+    if (areaRender == '#defender') {
+      $(areaRender).empty();
+      for (var i = 0; i < combatants.length; i++) {
+        //add enemy to defender area 
+        if (combatants[i].name == charactersObject) {
+          $('#defender').append("Opponent")
+          console.log('defender');
+          renderOne(combatants[i], areaRender, 'defender');
+        }
       }
     }
-  };
+    //update defender when attacked
+    //error
+    if (areaRender == 'playerDamage') {
+      $('#defender').empty();
+      $('#defender').append("Opponent")
+      renderOne(charactersObject, '#defender', 'defender');
+
+    }
+
+    //update player character when attacked
+    if (areaRender == 'enemyDamage') {
+      $('#selected-character').empty();
+      renderOne(charactersObject, '#selected-character', '');
+    }
+  };  
+  
+  
   //render all characters for user to choose who they fight
   renderCharacters(characters, "#characters-section");
   $(document).on("click", ".character", function() {
@@ -119,10 +171,46 @@ $(document).ready(function() {
       }
       $("#characters-section").hide();
       renderCharacters(currentSelectedCharacter, "#selected-character");
-
       renderCharacters(combatants, "#available-to-attack-section");
     }
   });
+
+  // --------------------------------------------------------------------
+  // attack function 
+  $('#attack-button').on('click', function() {
+    console.log('Attack');
+    //If defender area contains an enemy
+    if ($('#defender').children().length !== 0) {
+      console.log('damage calculation');
+      //defender state change
+      let attackMessage = "Hero" + currentSelectedCharacter + " attacks for " + (currentSelectedCharacter.attackPower * turnCounter) + " damage.";
+      renderMessage('clearMessage');
+      currentDefender.healthPoints = currentDefender.healthPoints - (currentSelectedCharacter.attack * turnCounter);
+      
+      //2 ifs statement?
+      //win condition 
+    if (currentDefender.healthPoints > 0) {
+      console.log('still alive');
+      //enemy is alive; continue the fight
+      renderCharacters(currentDefender, 'playerDamage');
+      //player state change
+      let counterAttackMessage = currentDefender.name + " strikes back for " + currentDefender.counterAttackPower + " damage.";
+      renderMessage(attackMessage); 
+      renderMessage(counterAttackMessage);  
+
+      currentSelectedCharacter.healthPoints = currentSelectedCharacter.healthPoints - currentDefender.counterAttackPower;
+      renderCharacters(currentSelectedCharacter, 'enemyDamage');
+      
+    }
+
+
+    } else {
+
+    }
+
+    });
+  //   }
+  // })
 
   //select enemy,
 
