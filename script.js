@@ -1,7 +1,7 @@
 //Create characters using objects
 
 $(document).ready(function() {
-  let characters = {
+  var characters = {
     Batman: {
       name: "Batman",
       image: "assets/images/batman.png",
@@ -44,32 +44,34 @@ $(document).ready(function() {
   var attackResult;
   var combatants = [];
   var turnCounter = 1;
+  var killCount = 0;
 
   //initialize game
 
-  let renderOne = function(character, renderArea, makeChar) {
-    let charDiv = $("<div class='character' data-name='" + character.name + "'>");
-    let charName = $("<div class='character-name'>").text(character.name);
-    let charImage = $("<img alt='image' class='character-image'>").attr(
+  var renderOne = function(character, renderArea, makeChar) {
+    var charDiv = $("<div class='character' data-name='" + character.name + "'>");
+    var charName = $("<div class='character-name'>").text(character.name);
+    var charImage = $("<img alt='image' class='character-image'>").attr(
       "src",
       character.image
     );
-    let charHealth = $("<div class='character-healthPoints'>").text(
+    var charHealth = $("<div class='character-healthPoints'>").text(
       character.healthPoints
     );
-    let charAttack = $("<div class='character-attackPower'>").text(
-      character.attackPower
-    );
-    let charCounterAttack = $(
-      "<div class='character-counterAttackPower'>"
-    ).text(character.counterAttackPower);
+    // var charAttack = $("<div class='character-attackPower'>").text(
+    //   character.attackPower
+    // );
+    // var charCounterAttack = $(
+    //   "<div class='character-counterAttackPower'>"
+    // ).text(character.counterAttackPower);
     charDiv
       .append(charName)
       .append(charImage)
       .append(charHealth)
-      .append(charAttack)
-      .append(charCounterAttack);
+      // .append(charAttack)
+      // .append(charCounterAttack);
     $(renderArea).append(charDiv);
+    $('.character').css('textTransform', 'capitalize');
 
     //conditional, separating out enemies
     if (makeChar == "enemy") {
@@ -81,9 +83,9 @@ $(document).ready(function() {
   };
 
   //function to render game message 
-  let renderMessage = function(message) {
-    let gameMessageSet = $('#gameMessage');
-    let newMessage = $('<div>').text(message);
+  var renderMessage = function(message) {
+    var gameMessageSet = $('#gameMessage');
+    var newMessage = $('<div>').text(message);
     gameMessageSet.append(newMessage);
     console.log('Game Message');
 
@@ -92,7 +94,7 @@ $(document).ready(function() {
     }
   };
 
-  let renderCharacters = function(charactersObject, areaRender) {
+  var renderCharacters = function(charactersObject, areaRender) {
     //render all characters
     if (areaRender == "#characters-section") {
       $(areaRender).empty();
@@ -141,8 +143,8 @@ $(document).ready(function() {
       }
     }
     //update defender when attacked
-    //error
     if (areaRender == 'playerDamage') {
+      console.log('update defenders');
       $('#defender').empty();
       $('#defender').append("Opponent")
       renderOne(charactersObject, '#defender', 'defender');
@@ -151,6 +153,7 @@ $(document).ready(function() {
 
     //update player character when attacked
     if (areaRender == 'enemyDamage') {
+      console.log('update player');
       $('#selected-character').empty();
       renderOne(charactersObject, '#selected-character', '');
     }
@@ -183,31 +186,42 @@ $(document).ready(function() {
     if ($('#defender').children().length !== 0) {
       console.log('damage calculation');
       //defender state change
-      let attackMessage = "Hero" + currentSelectedCharacter + " attacks for " + (currentSelectedCharacter.attackPower * turnCounter) + " damage.";
+      var attackMessage = "Hero" + currentSelectedCharacter + " attacks for " + (currentSelectedCharacter.attackPower * turnCounter) + " damage.";
       renderMessage('clearMessage');
       currentDefender.healthPoints = currentDefender.healthPoints - (currentSelectedCharacter.attack * turnCounter);
       
-      //2 ifs statement?
+    
       //win condition 
     if (currentDefender.healthPoints > 0) {
       console.log('still alive');
       //enemy is alive; continue the fight
       renderCharacters(currentDefender, 'playerDamage');
       //player state change
-      let counterAttackMessage = currentDefender.name + " strikes back for " + currentDefender.counterAttackPower + " damage.";
+      var counterAttackMessage = currentDefender.name + " strikes back for " + currentDefender.counterAttackPower + " damage.";
       renderMessage(attackMessage); 
       renderMessage(counterAttackMessage);  
 
       currentSelectedCharacter.healthPoints = currentSelectedCharacter.healthPoints - currentDefender.counterAttackPower;
       renderCharacters(currentSelectedCharacter, 'enemyDamage');
       
-    }
-
-
+      if (currentSelectedCharacter.health <= 0) {
+        renderMessage("clearMessage");
+        restartGame("You have been defeated...GAME OVER!!!");
+        $("#attack-button").unbind("click");
+      }
     } else {
-
+      renderCharacters(currentDefender, 'enemyDefeated');
+          killCount++;
+          if (killCount >= 3) {
+            renderMessage("clearMessage");
+            restartGame("You Won!!!! GAME OVER!!!");
     }
-
+  }
+  turnCounter++;
+} else {
+  renderMessage('clearMessage');
+  renderMessage('No enemy');
+}
     });
   //   }
   // })
