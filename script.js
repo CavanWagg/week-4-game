@@ -48,12 +48,12 @@ $(document).ready(function() {
 
   var renderOne = function(character, renderArea, makeChar) {
     var charDiv = $("<div class='character' data-name='" + character.name + "'>");
-    var charName = $("<div class='character-name'>").text(character.name);
-    var charImage = $("<img alt='image' class='character-image'>").attr(
+    var charName = $("<div class='character-name text-center'>").text(character.name);
+    var charImage = $("<img alt='image' class='img-fluid text-center character-image'>").attr(
       "src",
       character.image
     );
-    var charHealth = $("<div class='character-healthPoints'>").text(
+    var charHealth = $("<div class='character-healthPoints text-center'>").text(
       character.healthPoints
     );
     // var charAttack = $("<div class='character-attackPower'>").text(
@@ -186,7 +186,7 @@ $(document).ready(function() {
     if ($('#defender').children().length !== 0) {
       console.log('damage calculation');
       //defender state change
-      var attackMessage = currentSelectedCharacter + " attacks for " + (currentSelectedCharacter.attackPower * turnCounter) + " damage.";
+      var attackMessage = "You attacked " + currentDefender.name + " for "  + (currentSelectedCharacter.attackPower * turnCounter) + " damage.";
       renderMessage('clearMessage');
       //combat
       currentDefender.healthPoints = currentDefender.healthPoints - (currentSelectedCharacter.attackPower * turnCounter);

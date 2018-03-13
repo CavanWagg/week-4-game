@@ -1,2 +1,2 @@
 # week-4-game
-Star Wars RPG game with JQuery
+Batman RPG game with JQuery

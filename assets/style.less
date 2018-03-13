@@ -19,11 +19,12 @@ html {
 }
 #main-game-section {
   background: @bat-yellow;
+  color: white;
   
 }
 #characters-section {
   background: @dark-blue;
-  color: white;
+  
 }
 
 .character {
@@ -33,15 +34,21 @@ html {
 }
 
 .character-image {
-  width: 150px;
+  width: 50%;
+  display: block;
+  margin: auto;
 }
 #gameMessage {
   text-align: center;
   font-size: 10px;
+  color: @dark-blue;
 }
 #attack-button{
 	visibility: hidden;
 }
 #restart-button {
   visibility: hidden;
+}
+.jumbotron div {
+  font-size: 24px;
 }

@@ -13,10 +13,10 @@ html {
 }
 #main-game-section {
   background: #fAA60A;
+  color: white;
 }
 #characters-section {
   background: #002A47;
-  color: white;
 }
 .character {
   border: solid 1px #fAA60A;
@@ -24,15 +24,21 @@ html {
   background: #50667F;
 }
 .character-image {
-  width: 150px;
+  width: 50%;
+  display: block;
+  margin: auto;
 }
 #gameMessage {
   text-align: center;
   font-size: 10px;
+  color: #002A47;
 }
 #attack-button {
   visibility: hidden;
 }
 #restart-button {
   visibility: hidden;
+}
+.jumbotron div {
+  font-size: 24px;
 }
