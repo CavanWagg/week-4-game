@@ -4,6 +4,16 @@
     #ffed39
     	#3a486f blue
 */
+h1 {
+  text-align: center;
+}
+html {
+  height: 100%;
+  background: #fAA60A;
+}
+#main-game-section {
+  background: #fAA60A;
+}
 #characters-section {
   background: #002A47;
   color: white;

@@ -2,51 +2,49 @@
 
 $(document).ready(function() {
   var characters = {
-    Batman: {
+    'Batman': {
       name: "Batman",
       image: "assets/images/batman.png",
       healthPoints: 160,
-      attackPower: 30,
-      counterAttackPower: 40
+      attackPower: 15,
+      counterAttackPower: 20
     },
-    Joker: {
-      name: "Joker",
+    'Joker': {
+      name: 'Joker',
       image: "assets/images/joker.png",
-      healthPoints: 180,
-      attackPower: 30,
-      counterAttackPower: 40
+      healthPoints: 150,
+      attackPower: 25,
+      counterAttackPower: 15
     },
-    Catwoman: {
-      name: "Catwoman",
+    'Catwoman': {
+      name: 'Catwoman',
       image: "assets/images/catwoman.png",
-      healthPoints: 120,
-      attackPower: 30,
-      counterAttackPower: 40
+      healthPoints: 140,
+      attackPower: 9,
+      counterAttackPower: 8
     },
-    Penguin: {
-      name: "Penguin",
+    'Penguin': {
+      name: 'Penguin',
       image: "assets/images/penguin.png",
-      healthPoints: 90,
-      attackPower: 30,
-      counterAttackPower: 40
+      healthPoints: 130,
+      attackPower: 25,
+      counterAttackPower: 6
     },
-    Clayface: {
-      name: "Clayface",
+    'Clayface': {
+      name: 'Clayface',
       image: "assets/images/clayface.png",
       healthPoints: 200,
-      attackPower: 30,
-      counterAttackPower: 40
+      attackPower: 10,
+      counterAttackPower: 20
     }
   };
 
   var currentSelectedCharacter;
-  var currentDefender;
-  var attackResult;
+  var currentDefender; 
   var combatants = [];
   var turnCounter = 1;
   var killCount = 0;
 
-  //initialize game
 
   var renderOne = function(character, renderArea, makeChar) {
     var charDiv = $("<div class='character' data-name='" + character.name + "'>");
@@ -67,11 +65,11 @@ $(document).ready(function() {
     charDiv
       .append(charName)
       .append(charImage)
-      .append(charHealth)
+      .append(charHealth);
       // .append(charAttack)
       // .append(charCounterAttack);
     $(renderArea).append(charDiv);
-    $('.character').css('textTransform', 'capitalize');
+    
 
     //conditional, separating out enemies
     if (makeChar == "enemy") {
@@ -100,7 +98,7 @@ $(document).ready(function() {
       $(areaRender).empty();
       for (var key in charactersObject) {
         if (charactersObject.hasOwnProperty(key)) {
-          renderOne(charactersObject[key], areaRender, "");
+          renderOne(charactersObject[key], areaRender, '');
         }
       }
     }
@@ -108,7 +106,7 @@ $(document).ready(function() {
     //render player character
     if (areaRender == "#selected-character") {
       $("#selected-character").prepend("Your Character");
-      renderOne(charactersObject, areaRender, "");
+      renderOne(charactersObject, areaRender, '');
       $('#attack-button').css('visibility', 'visible');
     }
     //render combatants
@@ -136,7 +134,7 @@ $(document).ready(function() {
       for (var i = 0; i < combatants.length; i++) {
         //add enemy to defender area 
         if (combatants[i].name == charactersObject) {
-          $('#defender').append("Opponent")
+          $('#defender').append("Opponent");
           console.log('defender');
           renderOne(combatants[i], areaRender, 'defender');
         }
@@ -148,18 +146,20 @@ $(document).ready(function() {
       $('#defender').empty();
       $('#defender').append("Opponent")
       renderOne(charactersObject, '#defender', 'defender');
-
     }
-
     //update player character when attacked
     if (areaRender == 'enemyDamage') {
       console.log('update player');
       $('#selected-character').empty();
       renderOne(charactersObject, '#selected-character', '');
     }
-  };  
-  
-  
+  //render slain enemy
+  if (areaRender == 'enemyDefeated') {
+    $('#defender').empty();
+    var gameStateMessage = "You have slain " + charactersObject.name + " Who's next?"
+    renderMessage(gameStateMessage);
+  }
+};  
   //render all characters for user to choose who they fight
   renderCharacters(characters, "#characters-section");
   $(document).on("click", ".character", function() {
@@ -186,9 +186,11 @@ $(document).ready(function() {
     if ($('#defender').children().length !== 0) {
       console.log('damage calculation');
       //defender state change
-      var attackMessage = "Hero" + currentSelectedCharacter + " attacks for " + (currentSelectedCharacter.attackPower * turnCounter) + " damage.";
+      var attackMessage = currentSelectedCharacter + " attacks for " + (currentSelectedCharacter.attackPower * turnCounter) + " damage.";
       renderMessage('clearMessage');
-      currentDefender.healthPoints = currentDefender.healthPoints - (currentSelectedCharacter.attack * turnCounter);
+      //combat
+      currentDefender.healthPoints = currentDefender.healthPoints - (currentSelectedCharacter.attackPower * turnCounter);
+      console.log(currentDefender);
       
     
       //win condition 
@@ -204,7 +206,7 @@ $(document).ready(function() {
       currentSelectedCharacter.healthPoints = currentSelectedCharacter.healthPoints - currentDefender.counterAttackPower;
       renderCharacters(currentSelectedCharacter, 'enemyDamage');
       
-      if (currentSelectedCharacter.health <= 0) {
+      if (currentSelectedCharacter.healthPoints <= 0) {
         renderMessage("clearMessage");
         restartGame("You have been defeated...GAME OVER!!!");
         $("#attack-button").unbind("click");
@@ -220,31 +222,18 @@ $(document).ready(function() {
   turnCounter++;
 } else {
   renderMessage('clearMessage');
-  renderMessage('No enemy');
+  renderMessage('No enemy to attack');
 }
     });
-  //   }
-  // })
+ 
+    //Restart game 
+    var restartGame = function(inputEndGame) {
+      var restart = $('<button class="btn">Restart</button>').click(function()  {
+        location.reload();
+      });
+      var gameState = $('<div>').text(inputEndGame);
+      $('gameMessage').append(gameState);
+      $('gameMessage').append(restart);
+    };
 
-  //select enemy,
-
-  //Attack enemy, //create a button onclick attack function
-
-  // enemy healthPoints -= playerAttack
-  // hero healthPoints -= enemyAttack
-
-  //render message
-
-  // if (hero healthPoints < 1)
-  // gameOver();
-  // if all enemy healthPoints < 1)
-  // victory();
-
-  //clear message
-
-  //reset game to initial state using a reset button
-  // let restart = $('<button class="tn">Restart</button>').click(function() {
-  //   location.reload();
-  // });
-  // $("#gameMessage").append(restart); //need to render gameMessage
 });
